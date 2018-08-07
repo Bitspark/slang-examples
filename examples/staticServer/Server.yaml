@@ -1,0 +1,159 @@
+services:
+  main:
+    in:
+      type: map
+      map:
+        body:
+          type: binary
+        headers:
+          type: stream
+          stream:
+            type: map
+            map:
+              key:
+                type: string
+              value:
+                type: string
+        method:
+          type: string
+        params:
+          type: stream
+          stream:
+            type: map
+            map:
+              key:
+                type: string
+              values:
+                type: stream
+                stream:
+                  type: string
+        path:
+          type: string
+        protocol:
+          type: string
+    out:
+      type: map
+      map:
+        body:
+          type: binary
+        headers:
+          type: stream
+          stream:
+            type: map
+            map:
+              key:
+                type: string
+              value:
+                type: string
+        status:
+          type: number
+operators:
+  Convert:
+    operator: slang.data.Convert
+    generics:
+      fromType:
+        type: string
+      toType:
+        type: binary
+  ServeFile:
+    operator: examples.staticServer.ServeFile
+    properties:
+      404File: /404.html
+      root: ~/slang/projects/examples/staticServer/data/
+  Switch:
+    operator: slang.control.Switch
+    properties:
+      cases:
+      - /
+    generics:
+      inType:
+        type: string
+      outType:
+        type: map
+        map:
+          body:
+            type: binary
+          headers:
+            type: stream
+            stream:
+              type: map
+              map:
+                key:
+                  type: string
+                value:
+                  type: string
+          status:
+            type: number
+      selectType:
+        type: string
+  Value:
+    operator: slang.data.Value
+    properties:
+      value: []
+    generics:
+      valueType:
+        type: stream
+        stream:
+          type: map
+          map:
+            key:
+              type: string
+            value:
+              type: string
+  Value1:
+    operator: slang.data.Value
+    properties:
+      value: ""
+    generics:
+      valueType:
+        type: string
+  Value2:
+    operator: slang.data.Value
+    properties:
+      value: 302
+    generics:
+      valueType:
+        type: number
+  Value3:
+    operator: slang.data.Value
+    properties:
+      value:
+      - key: Location
+        value: /index.html
+    generics:
+      valueType:
+        type: stream
+        stream:
+          type: map
+          map:
+            key:
+              type: string
+            value:
+              type: string
+connections:
+  Convert):
+  - body(Switch./
+  ServeFile)body:
+  - body(Switch.default
+  ServeFile)status:
+  - status(Switch.default
+  Switch):
+  - )
+  Switch./):
+  - (Value1
+  - (Value2
+  Switch.default):
+  - path(ServeFile
+  - (Value
+  Value):
+  - headers(Switch.default
+  Value1):
+  - (Convert
+  Value2):
+  - status(Switch./
+  - (Value3
+  Value3):
+  - headers(Switch./
+  path(:
+  - item(Switch
+  - select(Switch

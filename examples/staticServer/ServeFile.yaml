@@ -1,0 +1,174 @@
+services:
+  main:
+    in:
+      type: map
+      map:
+        path:
+          type: string
+    out:
+      type: map
+      map:
+        body:
+          type: binary
+        status:
+          type: number
+operators:
+  Choose:
+    operator: slang.control.Choose
+    generics:
+      itemType:
+        type: binary
+  Concatenate:
+    operator: slang.string.Concatenate
+  Concatenate1:
+    operator: slang.string.Concatenate
+  Convert:
+    operator: slang.data.Convert
+    generics:
+      fromType:
+        type: string
+      toType:
+        type: binary
+  Convert1:
+    operator: slang.data.Convert
+    generics:
+      fromType:
+        type: binary
+      toType:
+        type: string
+  Convert2:
+    operator: slang.data.Convert
+    generics:
+      fromType:
+        type: string
+      toType:
+        type: binary
+  IsNull:
+    operator: slang.exception.IsNull
+  IsNull1:
+    operator: slang.exception.IsNull
+  Read:
+    operator: slang.files.Read
+  Read1:
+    operator: slang.files.Read
+  Switch:
+    operator: slang.control.Switch
+    properties:
+      cases:
+      - true
+    generics:
+      inType:
+        type: map
+        map:
+          body:
+            type: binary
+          path:
+            type: string
+      outType:
+        type: map
+        map:
+          body:
+            type: binary
+          status:
+            type: number
+      selectType:
+        type: boolean
+  Template:
+    operator: slang.string.Template
+    properties:
+      variables:
+      - path
+  Value:
+    operator: slang.data.Value
+    properties:
+      value: $root
+    generics:
+      valueType:
+        type: string
+  Value1:
+    operator: slang.data.Value
+    properties:
+      value: 200
+    generics:
+      valueType:
+        type: number
+  Value2:
+    operator: slang.data.Value
+    properties:
+      value: 404
+    generics:
+      valueType:
+        type: number
+  Value3:
+    operator: slang.data.Value
+    properties:
+      value: $root
+    generics:
+      valueType:
+        type: string
+  Value4:
+    operator: slang.data.Value
+    properties:
+      value: $404File
+    generics:
+      valueType:
+        type: string
+properties:
+  404File:
+    type: string
+  root:
+    type: string
+connections:
+  Choose):
+  - (Convert1
+  Choose.chooser)false:
+  - (IsNull1
+  Concatenate):
+  - (Read
+  Concatenate1):
+  - (Read1
+  Convert):
+  - false(Choose
+  Convert1):
+  - content(Template
+  Convert2):
+  - body(Switch.default
+  IsNull):
+  - select(Switch
+  IsNull1):
+  - (Choose.chooser
+  Read)content:
+  - item.body(Switch
+  Read)error:
+  - (IsNull
+  Read1)content:
+  - true(Choose
+  Read1)error:
+  - (Convert
+  Switch):
+  - )
+  Switch.default)path:
+  - path(Template
+  - (Value2
+  - (Value3
+  - (Value4
+  Switch.true)body:
+  - body(Switch.true
+  Switch.true)path:
+  - (Value1
+  Template):
+  - (Convert2
+  Value):
+  - a(Concatenate
+  Value1):
+  - status(Switch.true
+  Value2):
+  - status(Switch.default
+  Value3):
+  - a(Concatenate1
+  Value4):
+  - b(Concatenate1
+  path(:
+  - (Value
+  - b(Concatenate
+  - item.path(Switch

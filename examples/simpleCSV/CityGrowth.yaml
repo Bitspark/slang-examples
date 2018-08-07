@@ -1,0 +1,79 @@
+services:
+  main:
+    in:
+      type: trigger
+    out:
+      type: stream
+      stream:
+        type: map
+        map:
+          growth:
+            type: number
+          name:
+            type: string
+operators:
+  CSVRead:
+    operator: slang.encoding.CSVRead
+    properties:
+      columns:
+      - code
+      - name
+      - pop_2010
+      - pop_2020
+      - pop_2030
+      - pop_2040
+      - pop_2050
+      delimiter: ;
+  Convert:
+    operator: slang.data.Convert
+    generics:
+      fromType:
+        type: binary
+      toType:
+        type: string
+  Convert1:
+    operator: slang.data.Convert
+    generics:
+      fromType:
+        type: string
+      toType:
+        type: number
+  Convert2:
+    operator: slang.data.Convert
+    generics:
+      fromType:
+        type: string
+      toType:
+        type: number
+  Read:
+    operator: slang.files.Read
+  Subtract:
+    operator: slang.math.arith.Subtract
+  Value:
+    operator: slang.data.Value
+    properties:
+      value: ~/slang/projects/examples/simpleCSV/data/pwd_city.csv
+    generics:
+      valueType:
+        type: string
+connections:
+  (:
+  - (Value
+  CSVRead)~.col_pop_2010:
+  - (Convert1
+  CSVRead)~.col_pop_2050:
+  - (Convert2
+  CSVRead)~.col_name:
+  - )~.name
+  Convert):
+  - (CSVRead
+  Convert1):
+  - b(Subtract
+  Convert2):
+  - a(Subtract
+  Read)content:
+  - (Convert
+  Subtract):
+  - )~.growth
+  Value):
+  - (Read
