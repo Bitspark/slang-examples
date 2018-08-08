@@ -24,8 +24,17 @@ operators:
         type: binary
       toType:
         type: string
+  Convert1:
+    operator: slang.data.Convert
+    generics:
+      fromType:
+        type: string
+      toType:
+        type: number
   Read:
     operator: slang.files.Read
+  Sum:
+    operator: slang.math.aggregate.Sum
   Value:
     operator: slang.data.Value
     properties:
@@ -36,9 +45,15 @@ operators:
 connections:
   (:
   - (Value
+  CSVRead)~.col_pop_2010:
+  - (Convert1
   Convert):
   - (CSVRead
+  Convert1):
+  - ~(Sum
   Read)content:
   - (Convert
+  Sum):
+  - )
   Value):
   - (Read
