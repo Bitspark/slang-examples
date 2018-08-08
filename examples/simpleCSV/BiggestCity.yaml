@@ -77,9 +77,9 @@ connections:
   FindBest):
   - )~
   FindBest.chooser)false.population:
-  - a(Greater
-  FindBest.chooser)true.population:
   - b(Greater
+  FindBest.chooser)true.population:
+  - a(Greater
   Greater):
   - (FindBest.chooser
   Read)content:
