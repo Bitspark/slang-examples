@@ -37,10 +37,10 @@ operators:
             type: string
           tempKelvin:
             type: number
+  KelvinToCelsius:
+    operator: examples.temperature.KelvinToCelsius
   Less:
     operator: slang.math.arith.Less
-  Subtract:
-    operator: slang.math.arith.Subtract
   Template:
     operator: slang.string.Template
     properties:
@@ -61,13 +61,6 @@ operators:
     generics:
       valueType:
         type: string
-  Value2:
-    operator: slang.data.Value
-    properties:
-      value: 273.15
-    generics:
-      valueType:
-        type: number
 connections:
   ~(:
   - ~.city(FindBest
@@ -79,21 +72,18 @@ connections:
   FindBest)city:
   - )city
   FindBest)tempKelvin:
-  - a(Subtract
-  - (Value2
+  - (KelvinToCelsius
   FindBest.chooser)false.tempKelvin:
   - b(Less
   FindBest.chooser)true.tempKelvin:
   - a(Less
+  KelvinToCelsius):
+  - )tempCelcius
   Less):
   - (FindBest.chooser
-  Subtract):
-  - )tempCelcius
   Template):
   - (APIGet
   Value):
   - content(Template
   Value1):
   - key(Template
-  Value2):
-  - b(Subtract

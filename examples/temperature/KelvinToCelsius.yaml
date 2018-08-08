@@ -1,0 +1,24 @@
+services:
+  main:
+    in:
+      type: number
+    out:
+      type: number
+operators:
+  Subtract:
+    operator: slang.math.arith.Subtract
+  Value:
+    operator: slang.data.Value
+    properties:
+      value: 273.15
+    generics:
+      valueType:
+        type: number
+connections:
+  (:
+  - a(Subtract
+  - (Value
+  Subtract):
+  - )
+  Value):
+  - b(Subtract

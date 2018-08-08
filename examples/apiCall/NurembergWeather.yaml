@@ -7,7 +7,7 @@ services:
       map:
         humidity:
           type: number
-        tempKelvin:
+        temp:
           type: number
 operators:
   APIGet:
@@ -23,6 +23,8 @@ operators:
                 type: number
               temp:
                 type: number
+  KelvinToCelsius:
+    operator: examples.temperature.KelvinToCelsius
   Value:
     operator: slang.data.Value
     properties:
@@ -36,6 +38,8 @@ connections:
   APIGet)response.main.humidity:
   - )humidity
   APIGet)response.main.temp:
-  - )tempKelvin
+  - (KelvinToCelsius
+  KelvinToCelsius):
+  - )temp
   Value):
   - (APIGet
