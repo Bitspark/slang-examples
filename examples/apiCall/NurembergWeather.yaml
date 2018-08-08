@@ -1,0 +1,41 @@
+services:
+  main:
+    in:
+      type: trigger
+    out:
+      type: map
+      map:
+        humidity:
+          type: number
+        tempKelvin:
+          type: number
+operators:
+  APIGet:
+    operator: slang.net.APIGet
+    generics:
+      responseType:
+        type: map
+        map:
+          main:
+            type: map
+            map:
+              humidity:
+                type: number
+              temp:
+                type: number
+  Value:
+    operator: slang.data.Value
+    properties:
+      value: http://api.openweathermap.org/data/2.5/weather?q=Nuremberg,de&appid=1bd6e8e9303cb72cbbb8d87097ef6198
+    generics:
+      valueType:
+        type: string
+connections:
+  (:
+  - (Value
+  APIGet)response.main.humidity:
+  - )humidity
+  APIGet)response.main.temp:
+  - )tempKelvin
+  Value):
+  - (APIGet

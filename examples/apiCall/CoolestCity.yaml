@@ -1,0 +1,99 @@
+services:
+  main:
+    in:
+      type: stream
+      stream:
+        type: string
+    out:
+      type: map
+      map:
+        city:
+          type: string
+        tempCelcius:
+          type: number
+operators:
+  APIGet:
+    operator: slang.net.APIGet
+    generics:
+      responseType:
+        type: map
+        map:
+          main:
+            type: map
+            map:
+              temp:
+                type: number
+  FindBest:
+    operator: slang.stream.FindBest
+    properties:
+      emptyValue:
+        city: ""
+        tempKelvin: 0
+    generics:
+      itemType:
+        type: map
+        map:
+          city:
+            type: string
+          tempKelvin:
+            type: number
+  Less:
+    operator: slang.math.arith.Less
+  Subtract:
+    operator: slang.math.arith.Subtract
+  Template:
+    operator: slang.string.Template
+    properties:
+      variables:
+      - city
+      - key
+  Value:
+    operator: slang.data.Value
+    properties:
+      value: http://api.openweathermap.org/data/2.5/weather?q={city}&appid={key}
+    generics:
+      valueType:
+        type: string
+  Value1:
+    operator: slang.data.Value
+    properties:
+      value: 1bd6e8e9303cb72cbbb8d87097ef6198
+    generics:
+      valueType:
+        type: string
+  Value2:
+    operator: slang.data.Value
+    properties:
+      value: 273.15
+    generics:
+      valueType:
+        type: number
+connections:
+  ~(:
+  - ~.city(FindBest
+  - (Value
+  - city(Template
+  - (Value1
+  APIGet)response.main.temp:
+  - ~.tempKelvin(FindBest
+  FindBest)city:
+  - )city
+  FindBest)tempKelvin:
+  - a(Subtract
+  - (Value2
+  FindBest.chooser)false.tempKelvin:
+  - b(Less
+  FindBest.chooser)true.tempKelvin:
+  - a(Less
+  Less):
+  - (FindBest.chooser
+  Subtract):
+  - )tempCelcius
+  Template):
+  - (APIGet
+  Value):
+  - content(Template
+  Value1):
+  - key(Template
+  Value2):
+  - b(Subtract
