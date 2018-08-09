@@ -14,6 +14,10 @@ services:
 operators:
   APIGet:
     operator: slang.net.APIGet
+    properties:
+      params:
+      - q
+      - appid
     generics:
       responseType:
         type: map
@@ -41,16 +45,10 @@ operators:
     operator: examples.temperature.KelvinToCelsius
   Less:
     operator: slang.math.arith.Less
-  Template:
-    operator: slang.string.Template
-    properties:
-      variables:
-      - city
-      - key
   Value:
     operator: slang.data.Value
     properties:
-      value: http://api.openweathermap.org/data/2.5/weather?q={city}&appid={key}
+      value: http://api.openweathermap.org/data/2.5/weather
     generics:
       valueType:
         type: string
@@ -65,8 +63,8 @@ connections:
   ~(:
   - ~.city(FindBest
   - (Value
-  - city(Template
   - (Value1
+  - params.q(APIGet
   APIGet)response.main.temp:
   - ~.tempKelvin(FindBest
   FindBest)city:
@@ -81,9 +79,7 @@ connections:
   - )tempCelcius
   Less):
   - (FindBest.chooser
-  Template):
-  - (APIGet
   Value):
-  - content(Template
+  - url(APIGet
   Value1):
-  - key(Template
+  - params.appid(APIGet

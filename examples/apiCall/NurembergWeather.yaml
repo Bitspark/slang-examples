@@ -12,6 +12,10 @@ services:
 operators:
   APIGet:
     operator: slang.net.APIGet
+    properties:
+      params:
+      - q
+      - appid
     generics:
       responseType:
         type: map
@@ -28,13 +32,29 @@ operators:
   Value:
     operator: slang.data.Value
     properties:
-      value: http://api.openweathermap.org/data/2.5/weather?q=Nuremberg,de&appid=1bd6e8e9303cb72cbbb8d87097ef6198
+      value: http://api.openweathermap.org/data/2.5/weather
+    generics:
+      valueType:
+        type: string
+  Value1:
+    operator: slang.data.Value
+    properties:
+      value: Nuremberg,de
+    generics:
+      valueType:
+        type: string
+  Value2:
+    operator: slang.data.Value
+    properties:
+      value: 1bd6e8e9303cb72cbbb8d87097ef6198
     generics:
       valueType:
         type: string
 connections:
   (:
   - (Value
+  - (Value1
+  - (Value2
   APIGet)response.main.humidity:
   - )humidity
   APIGet)response.main.temp:
@@ -42,4 +62,8 @@ connections:
   KelvinToCelsius):
   - )temp
   Value):
-  - (APIGet
+  - url(APIGet
+  Value1):
+  - params.q(APIGet
+  Value2):
+  - params.appid(APIGet
