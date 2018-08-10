@@ -27,6 +27,18 @@ operators:
             map:
               temp:
                 type: number
+  Filter:
+    operator: slang.stream.Filter
+    generics:
+      itemType:
+        type: map
+        map:
+          city:
+            type: string
+          temp:
+            type: number
+          valid:
+            type: boolean
   FindBest:
     operator: slang.stream.FindBest
     properties:
@@ -61,12 +73,20 @@ operators:
         type: string
 connections:
   ~(:
-  - ~.city(FindBest
   - (Value
   - (Value1
   - params.q(APIGet
+  - ~.city(Filter
   APIGet)response.main.temp:
+  - ~.temp(Filter
+  APIGet)valid:
+  - ~.valid(Filter
+  Filter)~.city:
+  - ~.city(FindBest
+  Filter)~.temp:
   - ~.tempKelvin(FindBest
+  Filter.filter)valid:
+  - (Filter.filter
   FindBest)city:
   - )city
   FindBest)tempKelvin:
